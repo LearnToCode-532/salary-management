@@ -49,3 +49,35 @@ Tests
 Manual Verification
     ↓
 Commit
+```
+## 3. AI Prompt Log
+
+AI assistance was primarily provided through ChatGPT during development.
+
+The prompts are maintained in:
+
+    docs/ai/
+
+Prompts are organized according to development phases and features.
+
+Each prompt documents the intent of the AI interaction, relevant
+constraints, and expected outcome.
+
+The prompt history is maintained alongside the implementation so
+that the relationship between AI-assisted decisions and the resulting
+code can be reviewed.
+
+AI was used for:
+
+- Architecture exploration.
+- Implementation planning.
+- Code generation assistance.
+- Debugging.
+- Test design.
+- Test generation.
+- Code review.
+- Performance review.
+- Documentation.
+
+The developer reviewed and validated AI-generated suggestions before
+incorporating them into the project.
