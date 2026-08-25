@@ -37,7 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         if (employeeRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException(
+            throw new DuplicateEmployeeException(
                     "Email already exists: " + request.email()
             );
         }
@@ -92,7 +92,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         if (!employee.getEmail().equals(request.email())
                 && employeeRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException(
+            throw new DuplicateEmployeeException(
                     "Email already exists: " + request.email()
             );
         }

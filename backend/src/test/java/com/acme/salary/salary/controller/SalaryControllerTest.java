@@ -4,7 +4,9 @@ import com.acme.salary.salary.dto.SalaryHistoryResponse;
 import com.acme.salary.salary.dto.SalaryResponse;
 import com.acme.salary.salary.dto.UpdateSalaryRequest;
 import com.acme.salary.salary.service.SalaryService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tools.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
