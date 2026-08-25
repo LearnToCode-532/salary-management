@@ -1,0 +1,95 @@
+@if (summary()) {
+
+  <header class="dashboard-header">
+    <h1>Salary Analytics</h1>
+
+    <p>
+      Overview of employee compensation.
+      Reporting currency: {{ summary()!.reportingCurrency }}
+    </p>
+  </header>
+
+  <section class="metrics">
+
+    <article class="metric-card">
+      <span class="label">Employees</span>
+      <strong>
+        {{ summary()!.employeeCount | number }}
+      </strong>
+    </article>
+
+    <article class="metric-card">
+      <span class="label">
+        Total Salary ({{ summary()!.reportingCurrency }})
+      </span>
+      <strong>
+        {{ summary()!.totalSalary | number:'1.0-0' }}
+      </strong>
+    </article>
+
+    <article class="metric-card">
+      <span class="label">
+        Average Salary ({{ summary()!.reportingCurrency }})
+      </span>
+      <strong>
+        {{ summary()!.averageSalary | number:'1.0-0' }}
+      </strong>
+    </article>
+
+    <article class="metric-card">
+      <span class="label">
+        Median Salary ({{ summary()!.reportingCurrency }})
+      </span>
+      <strong>
+        {{ summary()!.medianSalary | number:'1.0-0' }}
+      </strong>
+    </article>
+
+  </section>
+
+  <section class="country-section">
+
+    <h2>Salary by Country</h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Country</th>
+          <th>Employees</th>
+          <th>Total Salary</th>
+          <th>Average Salary</th>
+          <th>Median Salary</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        @for (country of countrySummary(); track country.country) {
+
+          <tr>
+            <td>{{ country.country }}</td>
+            <td>{{ country.employeeCount | number }}</td>
+            <td>
+              {{ country.totalSalary | number:'1.0-0' }}
+              {{ country.reportingCurrency }}
+            </td>
+            <td>
+              {{ country.averageSalary | number:'1.0-0' }}
+              {{ country.reportingCurrency }}
+            </td>
+            <td>
+              {{ country.medianSalary | number:'1.0-0' }}
+              {{ country.reportingCurrency }}
+            </td>
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </section>
+
+}

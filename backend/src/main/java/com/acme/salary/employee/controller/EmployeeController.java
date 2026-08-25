@@ -34,10 +34,11 @@ public class EmployeeController {
 
     @GetMapping
     public Page<EmployeeResponse> getAll(
+        @RequestParam(required = false) String search,
             @PageableDefault(size = 20)
             Pageable pageable) {
 
-        return employeeService.getAll(pageable);
+        return employeeService.getAll(search, pageable);
     }
 
     @PutMapping("/{id}")

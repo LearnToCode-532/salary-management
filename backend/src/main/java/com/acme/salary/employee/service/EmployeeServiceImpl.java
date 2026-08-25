@@ -7,6 +7,7 @@ import com.acme.salary.employee.dto.CreateEmployeeRequest;
 import com.acme.salary.employee.dto.EmployeeResponse;
 import com.acme.salary.employee.dto.UpdateEmployeeRequest;
 import com.acme.salary.employee.repository.EmployeeRepository;
+import com.acme.salary.employee.repository.EmployeeSpecifications;
 import com.acme.salary.salary.domain.SalaryHistory;
 import com.acme.salary.salary.repository.SalaryHistoryRepository;
 
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,8 +78,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Page<EmployeeResponse> getAll(Pageable pageable) {
-        return employeeRepository.findAll(pageable)
+    public Page<EmployeeResponse> getAll(String search, Pageable pageable) {
+        Specification<Employee> specification = EmployeeSpecifications.search(search);
+        return employeeRepository.findAll(specification, pageable)
                 .map(this::toResponse);
     }
 

@@ -12,7 +12,7 @@ public interface EmployeeService {
 
     EmployeeResponse getById(Long id);
 
-    Page<EmployeeResponse> getAll(Pageable pageable);
+    Page<EmployeeResponse> getAll(String search, Pageable pageable);
 
     EmployeeResponse update(Long id, UpdateEmployeeRequest request);
 }

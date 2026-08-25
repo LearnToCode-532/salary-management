@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -150,10 +152,10 @@ class EmployeeServiceImplTest {
                                 PageRequest.of(0, 20),
                                 1);
 
-                when(employeeRepository.findAll(any(Pageable.class)))
+                when(employeeRepository.findAll(any(Specification.class),any(Pageable.class)))
                                 .thenReturn(page);
 
-                Page<EmployeeResponse> result = employeeService.getAll(PageRequest.of(0, 20));
+                Page<EmployeeResponse> result = employeeService.getAll("rahul@acme.com", PageRequest.of(0, 20));
 
                 assertThat(result.getTotalElements()).isEqualTo(1);
                 assertThat(result.getContent()).hasSize(1);

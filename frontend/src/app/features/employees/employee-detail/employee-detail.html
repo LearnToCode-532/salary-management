@@ -1,0 +1,70 @@
+<div class="employee-detail">
+
+  @if (loading()) {
+
+    <p>Loading employee...</p>
+
+  }
+
+  @if (error()) {
+
+    <p>Unable to load employee.</p>
+
+    <a routerLink="/employees">
+      Back to Employees
+    </a>
+
+  }
+
+  @if (employee()) {
+
+    <header class="page-header">
+
+      <div>
+        <h1>
+          {{ employee()!.firstName }}
+          {{ employee()!.lastName }}
+        </h1>
+
+        <p>
+          {{ employee()!.employeeCode }}
+        </p>
+      </div>
+
+      <div>
+        <a [routerLink]="['/employees', employee()!.id, 'edit']">
+          Edit
+        </a>
+      </div>
+
+    </header>
+
+    <section class="details">
+
+      <div>
+        <span>Email</span>
+        <strong>{{ employee()!.email }}</strong>
+      </div>
+
+      <div>
+        <span>Country</span>
+        <strong>{{ employee()!.country }}</strong>
+      </div>
+
+      <div>
+        <span>Current Salary</span>
+        <strong>
+          {{ employee()!.currentSalary | number:'1.0-2' }}
+          {{ employee()!.currency }}
+        </strong>
+      </div>
+
+    </section>
+
+    <a routerLink="/employees">
+      Back to Employees
+    </a>
+
+  }
+
+</div>

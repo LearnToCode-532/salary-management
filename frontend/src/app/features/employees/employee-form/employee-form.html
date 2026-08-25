@@ -1,0 +1,175 @@
+<div class="employee-form-page">
+
+  <header class="page-header">
+
+    <div>
+      <h1>
+        {{ editMode() ? 'Edit Employee' : 'Add Employee' }}
+      </h1>
+
+      <p>
+        {{
+          editMode()
+            ? 'Update employee information.'
+            : 'Create a new employee record.'
+        }}
+      </p>
+    </div>
+
+  </header>
+
+  @if (loading() && editMode()) {
+
+    <div class="state">
+      Loading employee...
+    </div>
+
+  } @else {
+
+    <form
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label for="employeeCode">
+            Employee Code
+          </label>
+
+          <input
+            id="employeeCode"
+            type="text"
+            formControlName="employeeCode"
+            [readonly]="editMode()"
+          />
+
+          @if (
+            form.controls.employeeCode.touched &&
+            form.controls.employeeCode.invalid
+          ) {
+            <small>
+              Employee code is required.
+            </small>
+          }
+
+        </div>
+
+        <div class="form-field">
+
+          <label for="firstName">
+            First Name
+          </label>
+
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+          />
+
+        </div>
+
+        <div class="form-field">
+
+          <label for="lastName">
+            Last Name
+          </label>
+
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+          />
+
+        </div>
+
+        <div class="form-field">
+
+          <label for="email">
+            Email
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+          />
+
+        </div>
+
+        <div class="form-field">
+
+          <label for="country">
+            Country
+          </label>
+
+          <input
+            id="country"
+            type="text"
+            formControlName="country"
+          />
+
+        </div>
+
+        <div class="form-field">
+
+          <label for="currentSalary">
+            Current Salary
+          </label>
+
+          <input
+            id="currentSalary"
+            type="number"
+            formControlName="currentSalary"
+          />
+
+        </div>
+
+        <div class="form-field">
+
+          <label for="currency">
+            Currency
+          </label>
+
+          <input
+            id="currency"
+            type="text"
+            formControlName="currency"
+          />
+
+        </div>
+
+      </div>
+
+      @if (error()) {
+
+        <div class="error">
+          Unable to save employee. Please try again.
+        </div>
+
+      }
+
+      <div class="actions">
+
+        <button
+          type="button"
+          (click)="cancel()">
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          [disabled]="loading()">
+
+          {{ editMode() ? 'Update Employee' : 'Create Employee' }}
+
+        </button>
+
+      </div>
+
+    </form>
+
+  }
+
+</div>

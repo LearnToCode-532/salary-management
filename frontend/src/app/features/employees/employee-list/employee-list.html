@@ -1,0 +1,153 @@
+<div class="employee-list">
+
+  <header class="page-header">
+
+    <div>
+      <h1>Employees</h1>
+      <p>Manage employee salary information.</p>
+    </div>
+
+    <button
+  type="button"
+  routerLink="/employees/new">
+  Add Employee
+</button>
+    
+  </header>
+  <div class="search-bar">
+
+  <input
+    type="text"
+    placeholder="Search employees..."
+    [ngModel]="search()"
+    (ngModelChange)="search.set($event)"
+    (keyup.enter)="onSearch()"
+  />
+
+  <button
+    type="button"
+    (click)="onSearch()">
+    Search
+  </button>
+
+  @if (search()) {
+
+    <button
+      type="button"
+      (click)="clearSearch()">
+      Clear
+    </button>
+
+  }
+  @if (loading()) {
+
+    <div class="state">
+      Loading employees...
+    </div>
+
+  }
+
+  @if (error()) {
+
+    <div class="state error">
+      Unable to load employees.
+    </div>
+
+  }
+
+  @if (!loading() && !error()) {
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Employee Code</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Country</th>
+            <th>Salary</th>
+            <th>Currency</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (employee of employees(); track employee.id) {
+
+            <tr>
+
+              <td>
+                <a [routerLink]="['/employees', employee.id]">
+                  {{ employee.employeeCode }}
+                </a>
+              </td>
+
+              <td>
+                {{ employee.firstName }}
+                {{ employee.lastName }}
+              </td>
+
+              <td>
+                {{ employee.email }}
+              </td>
+
+              <td>
+                {{ employee.country }}
+              </td>
+
+              <td>
+                {{ employee.currentSalary | number:'1.0-2' }}
+              </td>
+
+              <td>
+                {{ employee.currency }}
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+      
+    </div>
+    <div class="pagination">
+
+    <span>
+      Showing
+      {{ page() * size() + 1 }}
+      -
+      {{ Math.min((page() + 1) * size(), totalElements()) }}
+      of
+      {{ totalElements() }}
+    </span>
+
+    <div class="pagination-buttons">
+
+      <button
+        type="button"
+        (click)="previousPage()"
+        [disabled]="page() === 0">
+        Previous
+      </button>
+
+      <span>
+        Page {{ page() + 1 }} of {{ totalPages() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="nextPage()"
+        [disabled]="page() + 1 >= totalPages()">
+        Next
+      </button>
+
+    </div>
+
+    </div>
+  }
+
+</div>
