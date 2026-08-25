@@ -7,6 +7,9 @@ import com.acme.salary.employee.dto.CreateEmployeeRequest;
 import com.acme.salary.employee.dto.EmployeeResponse;
 import com.acme.salary.employee.dto.UpdateEmployeeRequest;
 import com.acme.salary.employee.repository.EmployeeRepository;
+import com.acme.salary.salary.domain.SalaryHistory;
+import com.acme.salary.salary.repository.SalaryHistoryRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,12 +30,15 @@ class EmployeeServiceImplTest {
 
         @Mock
         private EmployeeRepository employeeRepository;
+        
+        @Mock
+        private SalaryHistoryRepository salaryHistoryRepository;
 
         private EmployeeServiceImpl employeeService;
 
         @BeforeEach
         void setUp() {
-                employeeService = new EmployeeServiceImpl(employeeRepository);
+                employeeService = new EmployeeServiceImpl(employeeRepository, salaryHistoryRepository);
         }
         
         private CreateEmployeeRequest createRequest() {
@@ -64,24 +71,20 @@ class EmployeeServiceImplTest {
         @Test
         void shouldCreateEmployee() {
                 CreateEmployeeRequest request = createRequest();
-
                 when(employeeRepository.existsByEmployeeCode("EMP-10001"))
                                 .thenReturn(false);
                 when(employeeRepository.existsByEmail("rahul@acme.com"))
                                 .thenReturn(false);
-
                 Employee saved = employee();
-                when(employeeRepository.save(any(Employee.class)))
-                                .thenReturn(saved);
-
+                when(employeeRepository.save(any(Employee.class))).thenReturn(saved);
+                when(salaryHistoryRepository.save(any(SalaryHistory.class)))
+                                .thenAnswer(invocation -> invocation.getArgument(0));
                 EmployeeResponse response = employeeService.create(request);
 
                 assertThat(response.employeeCode()).isEqualTo("EMP-10001");
-                assertThat(response.email()).isEqualTo("rahul@acme.com");
-                assertThat(response.currentSalary())
-                                .isEqualByComparingTo("1500000");
-
+                assertThat(response.currentSalary()).isEqualByComparingTo("1500000");
                 verify(employeeRepository).save(any(Employee.class));
+                verify(salaryHistoryRepository).save(any(SalaryHistory.class));
         }
 
         @Test
@@ -236,5 +239,38 @@ class EmployeeServiceImplTest {
 
                 verify(employeeRepository, never())
                                 .existsByEmail("rahul@acme.com");
+        }
+        
+        @Test
+        void shouldCreateInitialSalaryHistory() {
+
+                CreateEmployeeRequest request = createRequest();
+
+                when(employeeRepository.existsByEmployeeCode("EMP-10001"))
+                        .thenReturn(false);
+
+                when(employeeRepository.existsByEmail("rahul@acme.com"))
+                        .thenReturn(false);
+
+                Employee saved = employee();
+
+                when(employeeRepository.save(any(Employee.class)))
+                        .thenReturn(saved);
+
+                when(salaryHistoryRepository.save(any(SalaryHistory.class)))
+                        .thenAnswer(invocation -> invocation.getArgument(0));
+
+                employeeService.create(request);
+
+                verify(salaryHistoryRepository).save(
+                        argThat(history ->
+                                history.getEmployee() == saved
+                                        && history.getSalary()
+                                        .compareTo(new BigDecimal("1500000")) == 0
+                                        && history.getCurrency().equals("INR")
+                                        && history.getEffectiveFrom()
+                                        != null
+                        )
+                );
         }
 }

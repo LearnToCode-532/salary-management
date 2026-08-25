@@ -7,7 +7,13 @@ import com.acme.salary.employee.dto.CreateEmployeeRequest;
 import com.acme.salary.employee.dto.EmployeeResponse;
 import com.acme.salary.employee.dto.UpdateEmployeeRequest;
 import com.acme.salary.employee.repository.EmployeeRepository;
+import com.acme.salary.salary.domain.SalaryHistory;
+import com.acme.salary.salary.repository.SalaryHistoryRepository;
+
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDate;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final SalaryHistoryRepository salaryHistoryRepository;
 
     @Override
     @Transactional
@@ -44,7 +51,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setCurrentSalary(request.currentSalary());
         employee.setCurrency(request.currency());
 
-        return toResponse(employeeRepository.save(employee));
+        Employee savedEmployee = employeeRepository.save(employee);
+
+        SalaryHistory history = new SalaryHistory();
+
+        history.setEmployee(savedEmployee);
+        history.setSalary(request.currentSalary());
+        history.setCurrency(request.currency());
+        history.setEffectiveFrom(LocalDate.now());
+
+        salaryHistoryRepository.save(history);
+        return toResponse(savedEmployee);
     }
 
     @Override
