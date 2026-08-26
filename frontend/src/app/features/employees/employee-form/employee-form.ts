@@ -18,7 +18,17 @@ import {
 
 import { CommonModule } from '@angular/common';
 
-import { EmployeeService } from '../../../../core/services/employee.service';
+import {
+  EmployeeService
+} from '../../../../core/services/employee.service';
+
+import {
+  SalaryService
+} from '../../../../core/services/salary.service';
+
+import {
+  CurrencyService
+} from '../../../../core/services/currency.service';
 
 @Component({
   selector: 'app-employee-form',
@@ -32,124 +42,230 @@ import { EmployeeService } from '../../../../core/services/employee.service';
 })
 export class EmployeeForm implements OnInit {
 
-  private readonly fb = inject(FormBuilder);
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  private readonly employeeService = inject(EmployeeService);
+  private readonly fb =
+    inject(FormBuilder);
 
-  readonly editMode = signal(false);
-  readonly loading = signal(false);
-  readonly error = signal(false);
+  private readonly route =
+    inject(ActivatedRoute);
+
+  private readonly router =
+    inject(Router);
+
+  private readonly employeeService =
+    inject(EmployeeService);
+
+  private readonly salaryService =
+    inject(SalaryService);
+
+  private readonly currencyService =
+    inject(CurrencyService);
+
+  readonly editMode =
+    signal(false);
+
+  readonly loading =
+    signal(false);
+
+  readonly error =
+    signal(false);
+
+  readonly currencies =
+    signal<string[]>([]);
+
+  readonly currencyLoading =
+    signal(true);
+
+  readonly currencyError =
+    signal(false);
 
   private employeeId: number | null = null;
 
-  readonly form = this.fb.nonNullable.group({
+  private originalSalary = 0;
 
-    employeeCode: [
-      '',
-      [
-        Validators.required
+  private originalCurrency = '';
+
+  readonly form =
+    this.fb.nonNullable.group({
+
+      employeeCode: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(50)
+        ]
+      ],
+
+      firstName: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(100)
+        ]
+      ],
+
+      lastName: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(100)
+        ]
+      ],
+
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          Validators.maxLength(255)
+        ]
+      ],
+
+      country: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(100)
+        ]
+      ],
+
+      currentSalary: [
+        0,
+        [
+          Validators.required,
+          Validators.min(0)
+        ]
+      ],
+
+      currency: [
+        {
+          value:'',
+          disabled: true
+        },
+        [
+          Validators.required,
+          Validators.pattern(/^[A-Z]{3}$/)
+        ]
       ]
-    ],
-
-    firstName: [
-      '',
-      [
-        Validators.required
-      ]
-    ],
-
-    lastName: [
-      '',
-      [
-        Validators.required
-      ]
-    ],
-
-    email: [
-      '',
-      [
-        Validators.required,
-        Validators.email
-      ]
-    ],
-
-    country: [
-      '',
-      [
-        Validators.required
-      ]
-    ],
-
-    currentSalary: [
-      0,
-      [
-        Validators.required,
-        Validators.min(0)
-      ]
-    ],
-
-    currency: [
-      '',
-      [
-        Validators.required
-      ]
-    ]
-
-  });
+    });
 
   ngOnInit(): void {
+
+    this.loadCurrencies();
 
     const idParam =
       this.route.snapshot.paramMap.get('id');
 
-    if (idParam) {
-
-      this.editMode.set(true);
-      this.employeeId = Number(idParam);
-
-      this.loadEmployee(this.employeeId);
-
+    if (!idParam) {
+      return;
     }
 
+    const id =
+      Number(idParam);
+
+    if (
+      !Number.isInteger(id) ||
+      id <= 0
+    ) {
+      this.error.set(true);
+      return;
+    }
+
+    this.editMode.set(true);
+    this.employeeId = id;
+
+    this.loadEmployee(id);
   }
 
-  private loadEmployee(id: number): void {
+  private loadCurrencies(): void {
+
+    this.currencyLoading.set(true);
+    this.currencyError.set(false);
+
+    this.currencyService
+      .getSupportedCurrencies()
+      .subscribe({
+
+        next: currencies => {
+
+          this.currencies.set(currencies);
+
+          this.currencyLoading.set(false);
+          this.form.controls.currency.enable();
+        },
+
+        error: error => {
+
+          console.error(
+            'Failed to load supported currencies:',
+            error
+          );
+
+          this.currencies.set([]);
+          this.currencyLoading.set(false);
+          this.currencyError.set(true);
+        }
+
+      });
+  }
+
+  private loadEmployee(
+    id: number
+  ): void {
 
     this.loading.set(true);
+    this.error.set(false);
 
-    this.employeeService.getEmployee(id).subscribe({
+    this.employeeService
+      .getEmployee(id)
+      .subscribe({
 
-      next: employee => {
+        next: employee => {
 
-        this.form.patchValue({
-          employeeCode: employee.employeeCode,
-          firstName: employee.firstName,
-          lastName: employee.lastName,
-          email: employee.email,
-          country: employee.country,
-          currentSalary: employee.currentSalary,
-          currency: employee.currency
-        });
+          this.form.patchValue({
 
-        this.loading.set(false);
+            employeeCode:
+              employee.employeeCode,
 
-      },
+            firstName:
+              employee.firstName,
 
-      error: error => {
+            lastName:
+              employee.lastName,
 
-        console.error(
-          'Failed to load employee:',
-          error
-        );
+            email:
+              employee.email,
 
-        this.loading.set(false);
-        this.error.set(true);
+            country:
+              employee.country,
 
-      }
+            currentSalary:
+              employee.currentSalary,
 
-    });
+            currency:
+              employee.currency
+          });
 
+          this.originalSalary =
+            employee.currentSalary;
+
+          this.originalCurrency =
+            employee.currency;
+
+          this.loading.set(false);
+        },
+
+        error: error => {
+
+          console.error(
+            'Failed to load employee:',
+            error
+          );
+
+          this.loading.set(false);
+          this.error.set(true);
+        }
+
+      });
   }
 
   submit(): void {
@@ -159,90 +275,213 @@ export class EmployeeForm implements OnInit {
       this.form.markAllAsTouched();
 
       return;
+    }
 
+    /*
+     * Do not allow employee creation/update
+     * when supported currencies could not be loaded.
+     */
+    if (
+      this.currencyLoading() ||
+      this.currencyError() ||
+      this.currencies().length === 0
+    ) {
+      return;
     }
 
     this.loading.set(true);
     this.error.set(false);
 
-    const value = this.form.getRawValue();
+    const value =
+      this.form.getRawValue();
 
-    if (this.editMode() && this.employeeId !== null) {
+    if (!this.editMode()) {
 
-      this.employeeService
-        .updateEmployee(
-          this.employeeId,
-          {
-            firstName: value.firstName,
-            lastName: value.lastName,
-            email: value.email,
-            country: value.country,
-            currentSalary: value.currentSalary,
-            currency: value.currency
-          }
-        )
-        .subscribe({
+      this.createEmployee(value);
 
-          next: employee => {
-
-            this.router.navigate([
-              '/employees',
-              employee.id
-            ]);
-
-          },
-
-          error: error => {
-
-            console.error(
-              'Failed to update employee:',
-              error
-            );
-
-            this.loading.set(false);
-            this.error.set(true);
-
-          }
-
-        });
-
-    } else {
-
-      this.employeeService
-        .createEmployee(value)
-        .subscribe({
-
-          next: employee => {
-
-            this.router.navigate([
-              '/employees',
-              employee.id
-            ]);
-
-          },
-
-          error: error => {
-
-            console.error(
-              'Failed to create employee:',
-              error
-            );
-
-            this.loading.set(false);
-            this.error.set(true);
-
-          }
-
-        });
-
+      return;
     }
 
+    if (this.employeeId === null) {
+
+      this.loading.set(false);
+      this.error.set(true);
+
+      return;
+    }
+
+    this.updateEmployee(
+      this.employeeId,
+      value
+    );
+  }
+
+  private createEmployee(
+    value: ReturnType<
+      typeof this.form.getRawValue
+    >
+  ): void {
+
+    this.employeeService
+      .createEmployee(value)
+      .subscribe({
+
+        next: employee => {
+
+          this.router.navigate([
+            '/employees',
+            employee.id
+          ]);
+        },
+
+        error: error => {
+
+          console.error(
+            'Failed to create employee:',
+            error
+          );
+
+          this.loading.set(false);
+          this.error.set(true);
+        }
+
+      });
+  }
+
+  private updateEmployee(
+    employeeId: number,
+    value: ReturnType<
+      typeof this.form.getRawValue
+    >
+  ): void {
+
+    /*
+     * Employee information is updated
+     * through the Employee API.
+     *
+     * Salary is handled separately by
+     * the Salary API.
+     */
+    this.employeeService
+      .updateEmployee(
+        employeeId,
+        {
+          firstName: value.firstName,
+          lastName: value.lastName,
+          email: value.email,
+          country: value.country
+        }
+      )
+      .subscribe({
+
+        next: () => {
+
+          const salaryChanged =
+            value.currentSalary !==
+              this.originalSalary ||
+            value.currency !==
+              this.originalCurrency;
+
+          if (!salaryChanged) {
+
+            this.navigateToEmployee(
+              employeeId
+            );
+
+            return;
+          }
+
+          this.updateSalary(
+            employeeId,
+            value.currentSalary,
+            value.currency
+          );
+        },
+
+        error: error => {
+
+          console.error(
+            'Failed to update employee:',
+            error
+          );
+
+          this.loading.set(false);
+          this.error.set(true);
+        }
+
+      });
+  }
+
+  private updateSalary(
+    employeeId: number,
+    salary: number,
+    currency: string
+  ): void {
+
+    this.salaryService
+      .updateSalary(
+        employeeId,
+        {
+          salary,
+          currency,
+          effectiveFrom:
+            this.getToday()
+        }
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.navigateToEmployee(
+            employeeId
+          );
+        },
+
+        error: error => {
+
+          console.error(
+            'Failed to update salary:',
+            error
+          );
+
+          this.loading.set(false);
+          this.error.set(true);
+        }
+
+      });
+  }
+
+  private getToday(): string {
+
+    return new Date()
+      .toISOString()
+      .split('T')[0];
+  }
+
+  private navigateToEmployee(
+    employeeId: number
+  ): void {
+
+    this.router.navigate([
+      '/employees',
+      employeeId
+    ]);
   }
 
   cancel(): void {
 
-    this.router.navigate(['/employees']);
+    if (this.employeeId !== null) {
 
+      this.router.navigate([
+        '/employees',
+        this.employeeId
+      ]);
+
+      return;
+    }
+
+    this.router.navigate([
+      '/employees'
+    ]);
   }
-
 }

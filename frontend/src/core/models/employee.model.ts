@@ -10,7 +10,3 @@ export interface Employee {
   createdAt: string;
   updatedAt: string;
 }
-export interface EmployeePage {
-  content: Employee[];
-  totalElements: number;
-}

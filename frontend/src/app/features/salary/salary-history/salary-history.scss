@@ -1,0 +1,360 @@
+.salary-history-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  color: #1f2937;
+}
+
+
+/* =========================
+   Page Header
+   ========================= */
+
+.salary-history-container .page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.salary-history-container .page-header h1 {
+  margin: 0 0 6px;
+
+  color: #111827;
+
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+
+  letter-spacing: -0.02em;
+}
+
+.salary-history-container .page-header p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+
+/* =========================
+   Back to Employee
+   Same as Add Employee
+   ========================= */
+
+.salary-history-container .back-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 125px;
+  min-height: 38px;
+
+  padding: 9px 16px;
+
+  border: 1px solid #2563eb;
+  border-radius: 8px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+
+  text-decoration: none;
+
+  white-space: nowrap;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.salary-history-container .back-link:hover {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+
+  box-shadow:
+    0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+
+/* =========================
+   Status
+   ========================= */
+
+.salary-history-container .status-message {
+  margin: 0;
+  padding: 40px 24px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #6b7280;
+
+  font-size: 14px;
+  text-align: center;
+
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.salary-history-container .error-message {
+  margin: 0;
+  padding: 14px 16px;
+
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+
+  background: #fef2f2;
+  color: #b91c1c;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+/* =========================
+   Table Container
+   ========================= */
+
+.salary-history-container .table-container {
+  width: 100%;
+  overflow-x: auto;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================
+   Table
+   ========================= */
+
+.salary-history-container table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+.salary-history-container thead {
+  background: #f9fafb;
+}
+
+.salary-history-container th {
+  padding: 13px 16px;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  color: #6b7280;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  white-space: nowrap;
+}
+
+.salary-history-container td {
+  padding: 15px 16px;
+
+  border-bottom: 1px solid #f3f4f6;
+
+  color: #374151;
+
+  font-size: 14px;
+
+  white-space: nowrap;
+}
+
+.salary-history-container tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.salary-history-container tbody tr:hover {
+  background: #f9fafb;
+}
+
+.salary-history-container tbody tr:last-child td {
+  border-bottom: none;
+}
+
+
+/* =========================
+   Salary Column
+   ========================= */
+
+.salary-history-container th:nth-child(2),
+.salary-history-container td:nth-child(2) {
+  text-align: right;
+}
+
+.salary-history-container td:nth-child(2) {
+  color: #111827;
+  font-weight: 600;
+}
+
+
+/* =========================
+   Currency
+   ========================= */
+
+.salary-history-container td:nth-child(3) {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+
+/* =========================
+   Pagination
+   ========================= */
+
+.salary-history-container .pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  margin-top: 20px;
+}
+
+
+/* Previous / Next */
+
+.salary-history-container .pagination button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 88px;
+  min-height: 38px;
+
+  padding: 9px 16px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #374151;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.salary-history-container .pagination button:hover:not(:disabled) {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.salary-history-container .pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+
+/* Page X of Y */
+
+.salary-history-container .pagination span {
+  min-width: 110px;
+
+  color: #374151;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  text-align: center;
+  white-space: nowrap;
+}
+
+
+/* =========================
+   Record Count
+   ========================= */
+
+.salary-history-container .record-count {
+  margin: 14px 0 0;
+
+  color: #6b7280;
+
+  font-size: 13px;
+  text-align: right;
+}
+
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 700px) {
+
+  .salary-history-container {
+    padding: 24px 16px;
+  }
+
+  .salary-history-container .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .salary-history-container .page-header h1 {
+    font-size: 26px;
+  }
+
+  .salary-history-container .back-link {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .salary-history-container .table-container {
+    border-radius: 10px;
+  }
+
+  .salary-history-container table {
+    min-width: 550px;
+  }
+
+  .salary-history-container .pagination {
+    justify-content: space-between;
+  }
+
+  .salary-history-container .pagination span {
+    min-width: auto;
+  }
+
+  .salary-history-container .record-count {
+    text-align: center;
+  }
+
+}

@@ -3,7 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { Employee, EmployeePage } from '../models/employee.model';
+import { Employee } from '../models/employee.model';
+import { PageResponse } from '../models/page-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,18 +19,30 @@ export class EmployeeService {
   getEmployees(
     page: number,
     size: number,
-    search?: string
-  ): Observable<EmployeePage> {
+    search?: string,
+    sortBy?: string,
+    sortDirection?: 'asc' | 'desc'
+  ): Observable<PageResponse<Employee>> {
 
     let params = new HttpParams()
       .set('page', page)
       .set('size', size);
 
     if (search) {
-      params = params.set('search', search);
+      params = params.set(
+        'search',
+        search
+      );
     }
 
-    return this.http.get<EmployeePage>(
+    if (sortBy) {
+      params = params.set(
+        'sort',
+        `${sortBy},${sortDirection ?? 'asc'}`
+      );
+    }
+
+    return this.http.get<PageResponse<Employee>>(
       this.apiUrl,
       { params }
     );

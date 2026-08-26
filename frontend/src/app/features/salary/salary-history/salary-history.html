@@ -1,0 +1,133 @@
+<div class="salary-history-container">
+
+  <div class="page-header">
+
+    <div>
+      <h1>Salary History</h1>
+
+      <p>
+        Employee ID: {{ employeeId() }}
+      </p>
+    </div>
+
+    <a
+      class="btn btn-primary"
+      [routerLink]="['/employees', employeeId()]">
+      Back to Employee
+    </a>
+
+
+  </div>
+
+
+  @if (loading()) {
+
+    <p class="status-message">
+      Loading salary history...
+    </p>
+
+  } @else if (errorMessage()) {
+
+    <p class="error-message">
+      {{ errorMessage() }}
+    </p>
+
+  } @else if (salaryHistory().length === 0) {
+
+    <p class="status-message">
+      No salary history available.
+    </p>
+
+  } @else {
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Effective From</th>
+            <th>Salary</th>
+            <th>Currency</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (
+            history of salaryHistory();
+            track history.id
+          ) {
+
+            <tr>
+
+              <td>
+                {{ history.effectiveFrom }}
+              </td>
+
+              <td>
+                {{ history.salary | number:'1.2-2' }}
+              </td>
+
+              <td>
+                {{ history.currency }}
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    @if (totalPages() > 1) {
+
+      <div class="pagination">
+
+        <button
+          type="button"
+          (click)="previousPage()"
+          [disabled]="!hasPreviousPage">
+
+          Previous
+
+        </button>
+
+
+        <span>
+          Page {{ page() + 1 }}
+          of {{ totalPages() }}
+        </span>
+
+
+        <button
+          type="button"
+          (click)="nextPage()"
+          [disabled]="!hasNextPage">
+
+          Next
+
+        </button>
+
+      </div>
+
+    }
+
+
+    <p class="record-count">
+
+      Showing
+      {{ salaryHistory().length }}
+      of
+      {{ totalElements() }}
+      records
+
+    </p>
+
+  }
+
+</div>

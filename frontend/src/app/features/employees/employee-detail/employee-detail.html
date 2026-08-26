@@ -32,7 +32,9 @@
       </div>
 
       <div>
-        <a [routerLink]="['/employees', employee()!.id, 'edit']">
+        <a
+          class="btn btn-primary"
+          [routerLink]="['/employees', employee()!.id, 'edit']">
           Edit
         </a>
       </div>
@@ -64,7 +66,10 @@
     <a routerLink="/employees">
       Back to Employees
     </a>
-
+    <a
+      [routerLink]="['/employees', employee()!.id, 'salary-history']">
+      View Salary History
+    </a>
   }
 
 </div>

@@ -45,13 +45,17 @@
             [readonly]="editMode()"
           />
 
-          @if (
-            form.controls.employeeCode.touched &&
-            form.controls.employeeCode.invalid
-          ) {
-            <small>
-              Employee code is required.
-            </small>
+          @if (form.controls.employeeCode.invalid &&
+              form.controls.employeeCode.touched) {
+            <div class="field-error">
+              @if (form.controls.employeeCode.hasError('required')) {
+                Employee code is required.
+              }
+
+              @if (form.controls.employeeCode.hasError('maxlength')) {
+                Employee code must not exceed 50 characters.
+              }
+            </div>
           }
 
         </div>
@@ -67,7 +71,14 @@
             type="text"
             formControlName="firstName"
           />
-
+          @if (form.controls.firstName.invalid &&
+              form.controls.firstName.touched) {
+            <div class="field-error">
+              @if (form.controls.firstName.hasError('required')) {
+                First name is required.
+              }
+            </div>
+          }
         </div>
 
         <div class="form-field">
@@ -81,7 +92,14 @@
             type="text"
             formControlName="lastName"
           />
-
+          @if (form.controls.lastName.invalid &&
+              form.controls.lastName.touched) {
+            <div class="field-error">
+              @if (form.controls.lastName.hasError('required')) {
+                Last name is required.
+              }
+            </div>
+          }
         </div>
 
         <div class="form-field">
@@ -95,7 +113,22 @@
             type="email"
             formControlName="email"
           />
+          @if (form.controls.email.invalid &&
+              form.controls.email.touched) {
+            <div class="field-error">
+              @if (form.controls.email.hasError('required')) {
+                Email is required.
+              }
 
+              @if (form.controls.email.hasError('email')) {
+                Enter a valid email address.
+              }
+
+              @if (form.controls.email.hasError('maxlength')) {
+                Email must not exceed 255 characters.
+              }
+            </div>
+          }
         </div>
 
         <div class="form-field">
@@ -123,7 +156,18 @@
             type="number"
             formControlName="currentSalary"
           />
+          @if (form.controls.currentSalary.invalid &&
+              form.controls.currentSalary.touched) {
+            <div class="field-error">
+              @if (form.controls.currentSalary.hasError('required')) {
+                Salary is required.
+              }
 
+              @if (form.controls.currentSalary.hasError('min')) {
+                Salary cannot be negative.
+              }
+            </div>
+          }
         </div>
 
         <div class="form-field">
@@ -132,11 +176,79 @@
             Currency
           </label>
 
-          <input
-            id="currency"
-            type="text"
-            formControlName="currency"
-          />
+          @if (currencyLoading()) {
+
+            <select
+              id="currency"
+              formControlName="currency">
+
+              <option value="">
+                Loading currencies...
+              </option>
+
+            </select>
+
+          } @else {
+
+            <select
+              id="currency"
+              formControlName="currency">
+
+              <option value="">
+                Select currency
+              </option>
+
+              @for (
+                currency of currencies();
+                track currency
+              ) {
+
+                <option [value]="currency">
+                  {{ currency }}
+                </option>
+
+              }
+
+            </select>
+
+          }
+
+          @if (currencyError()) {
+
+            <div class="field-error">
+              Unable to load supported currencies.
+              Please try again.
+            </div>
+
+          }
+
+          @if (
+            form.controls.currency.invalid &&
+            form.controls.currency.touched
+          ) {
+
+            <div class="field-error">
+
+              @if (
+                form.controls.currency.hasError('required')
+              ) {
+
+                Currency is required.
+
+              }
+
+              @if (
+                form.controls.currency.hasError('pattern')
+              ) {
+
+                Currency must be a 3-letter uppercase
+                code, for example USD.
+
+              }
+
+            </div>
+
+          }
 
         </div>
 

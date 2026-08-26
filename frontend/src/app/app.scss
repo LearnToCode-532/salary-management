@@ -1,0 +1,130 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 64px;
+  padding: 0 32px;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  background: #ffffff;
+
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================
+   Application Title
+   ========================= */
+
+.app-header h1 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1;
+
+  letter-spacing: -0.01em;
+}
+
+
+/* =========================
+   Navigation
+   ========================= */
+
+.app-nav {
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
+}
+
+
+/* =========================
+   Navigation Links
+   ========================= */
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 38px;
+  padding: 8px 14px;
+
+  border-radius: 8px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  text-decoration: none;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+
+/* Normal link */
+
+a.nav-link:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+
+/* Active navigation item */
+
+.nav-link.active {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+
+/* =========================
+   Main Content
+   ========================= */
+
+.app-content {
+  min-height: calc(100vh - 64px);
+
+  background: #f9fafb;
+}
+
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 700px) {
+
+  .app-header {
+    min-height: 60px;
+    padding: 0 16px;
+  }
+
+  .app-header h1 {
+    font-size: 17px;
+  }
+
+  .nav-link {
+    min-height: 36px;
+    padding: 7px 10px;
+
+    font-size: 13px;
+  }
+
+  .app-content {
+    min-height: calc(100vh - 60px);
+  }
+
+}

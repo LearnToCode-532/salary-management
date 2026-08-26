@@ -1,95 +1,322 @@
-@if (summary()) {
+@if (loading()) {
 
-  <header class="dashboard-header">
-    <h1>Salary Analytics</h1>
+  <div class="dashboard-state">
+    Loading salary analytics...
+  </div>
 
-    <p>
-      Overview of employee compensation.
-      Reporting currency: {{ summary()!.reportingCurrency }}
-    </p>
-  </header>
+} @else if (error()) {
 
-  <section class="metrics">
+  <div class="dashboard-state error">
+    Unable to load salary analytics.
+  </div>
 
-    <article class="metric-card">
-      <span class="label">Employees</span>
-      <strong>
-        {{ summary()!.employeeCount | number }}
-      </strong>
-    </article>
+} @else if (summary()) {
 
-    <article class="metric-card">
-      <span class="label">
-        Total Salary ({{ summary()!.reportingCurrency }})
-      </span>
-      <strong>
-        {{ summary()!.totalSalary | number:'1.0-0' }}
-      </strong>
-    </article>
+  <div class="dashboard">
 
-    <article class="metric-card">
-      <span class="label">
-        Average Salary ({{ summary()!.reportingCurrency }})
-      </span>
-      <strong>
-        {{ summary()!.averageSalary | number:'1.0-0' }}
-      </strong>
-    </article>
+    <header class="dashboard-header">
 
-    <article class="metric-card">
-      <span class="label">
-        Median Salary ({{ summary()!.reportingCurrency }})
-      </span>
-      <strong>
-        {{ summary()!.medianSalary | number:'1.0-0' }}
-      </strong>
-    </article>
+      <div>
+        <h1>Salary Analytics</h1>
 
-  </section>
+        <p>
+          Overview of employee compensation.
+          Reporting currency:
+          {{ summary()!.reportingCurrency }}
+        </p>
+      </div>
 
-  <section class="country-section">
+    </header>
 
-    <h2>Salary by Country</h2>
 
-    <table>
+    <!-- Metrics -->
 
-      <thead>
-        <tr>
-          <th>Country</th>
-          <th>Employees</th>
-          <th>Total Salary</th>
-          <th>Average Salary</th>
-          <th>Median Salary</th>
-        </tr>
-      </thead>
+    <section class="metrics">
 
-      <tbody>
+      <article class="metric-card">
 
-        @for (country of countrySummary(); track country.country) {
+        <span class="label">
+          Employees
+        </span>
 
-          <tr>
-            <td>{{ country.country }}</td>
-            <td>{{ country.employeeCount | number }}</td>
-            <td>
-              {{ country.totalSalary | number:'1.0-0' }}
-              {{ country.reportingCurrency }}
-            </td>
-            <td>
-              {{ country.averageSalary | number:'1.0-0' }}
-              {{ country.reportingCurrency }}
-            </td>
-            <td>
-              {{ country.medianSalary | number:'1.0-0' }}
-              {{ country.reportingCurrency }}
-            </td>
-          </tr>
+        <strong>
+          {{ summary()!.employeeCount | number }}
+        </strong>
 
-        }
+      </article>
 
-      </tbody>
 
-    </table>
+      <article class="metric-card">
 
-  </section>
+        <span class="label">
+          Total Salary
+          ({{ summary()!.reportingCurrency }})
+        </span>
+
+        <strong>
+          {{
+            summary()!.totalSalary
+              | number:'1.0-0'
+          }}
+        </strong>
+
+      </article>
+
+
+      <article class="metric-card">
+
+        <span class="label">
+          Average Salary
+          ({{ summary()!.reportingCurrency }})
+        </span>
+
+        <strong>
+          {{
+            summary()!.averageSalary
+              | number:'1.0-0'
+          }}
+        </strong>
+
+      </article>
+
+
+      <article class="metric-card">
+
+        <span class="label">
+          Median Salary
+          ({{ summary()!.reportingCurrency }})
+        </span>
+
+        <strong>
+          {{
+            summary()!.medianSalary
+              | number:'1.0-0'
+          }}
+        </strong>
+
+      </article>
+
+    </section>
+
+
+    <!-- Charts -->
+
+    <section class="charts">
+
+      <article class="chart-card">
+
+        <header class="chart-header">
+
+          <h2>
+            Employees by Country
+          </h2>
+
+          <p>
+            Number of employees in each country.
+          </p>
+
+        </header>
+
+        <div class="chart-container">
+
+          <canvas
+            baseChart
+            [data]="employeeChartData()"
+            [options]="barChartOptions"
+            type="bar">
+          </canvas>
+
+        </div>
+
+      </article>
+
+
+      <article class="chart-card">
+
+        <header class="chart-header">
+
+          <h2>
+            Average Salary by Country
+          </h2>
+
+          <p>
+            Average salary in
+            {{ summary()!.reportingCurrency }}.
+          </p>
+
+        </header>
+
+        <div class="chart-container">
+
+          <canvas
+            baseChart
+            [data]="averageSalaryChartData()"
+            [options]="barChartOptions"
+            type="bar">
+          </canvas>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- Country table -->
+
+    <section class="country-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Salary by Country
+          </h2>
+
+          <p>
+            Detailed country-level compensation
+            statistics.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="table-container">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th
+                class="sortable"
+                (click)="sortBy('country')">
+
+                Country
+
+                <span class="sort-indicator">
+                  {{ sortIndicator('country') }}
+                </span>
+
+              </th>
+
+
+              <th
+                class="sortable"
+                (click)="sortBy('employeeCount')">
+
+                Employees
+
+                <span class="sort-indicator">
+                  {{ sortIndicator('employeeCount') }}
+                </span>
+
+              </th>
+
+
+              <th
+                class="sortable"
+                (click)="sortBy('totalSalary')">
+
+                Total Salary
+
+                <span class="sort-indicator">
+                  {{ sortIndicator('totalSalary') }}
+                </span>
+
+              </th>
+
+
+              <th
+                class="sortable"
+                (click)="sortBy('averageSalary')">
+
+                Average Salary
+
+                <span class="sort-indicator">
+                  {{ sortIndicator('averageSalary') }}
+                </span>
+
+              </th>
+
+
+              <th
+                class="sortable"
+                (click)="sortBy('medianSalary')">
+
+                Median Salary
+
+                <span class="sort-indicator">
+                  {{ sortIndicator('medianSalary') }}
+                </span>
+
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              country of sortedCountries();
+              track country.country
+            ) {
+
+              <tr>
+
+                <td>
+                  {{ country.country }}
+                </td>
+
+                <td>
+                  {{
+                    country.employeeCount
+                      | number
+                  }}
+                </td>
+
+                <td>
+                  {{
+                    country.totalSalary
+                      | number:'1.0-0'
+                  }}
+                  {{ country.reportingCurrency }}
+                </td>
+
+                <td>
+                  {{
+                    country.averageSalary
+                      | number:'1.0-0'
+                  }}
+                  {{ country.reportingCurrency }}
+                </td>
+
+                <td>
+                  {{
+                    country.medianSalary
+                      | number:'1.0-0'
+                  }}
+                  {{ country.reportingCurrency }}
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </div>
 
 }

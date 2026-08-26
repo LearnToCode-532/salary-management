@@ -1,9 +1,15 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { Salary } from '../models/salary.model';
+
+import {
+  SalaryResponse,
+  UpdateSalaryRequest,
+  SalaryHistoryResponse
+} from '../models/salary.model';
+import { PageResponse } from '../models/page-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,23 +17,37 @@ import { Salary } from '../models/salary.model';
 export class SalaryService {
 
   private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.apiUrl}/employees`;
 
-  private readonly apiUrl =
-    `${environment.apiUrl}/employees`;
-
-  getCurrentSalary(employeeId: number): Observable<Salary> {
-    return this.http.get<Salary>(
-      `${this.apiUrl}/${employeeId}/salary`
+  getCurrentSalary(employeeId: number): Observable<SalaryResponse> {
+    return this.http.get<SalaryResponse>(
+      `${this.baseUrl}/${employeeId}/salary`
     );
   }
 
   updateSalary(
     employeeId: number,
-    salary: Partial<Salary>
-  ): Observable<Salary> {
-    return this.http.put<Salary>(
-      `${this.apiUrl}/${employeeId}/salary`,
-      salary
+    request: UpdateSalaryRequest
+  ): Observable<SalaryResponse> {
+    return this.http.put<SalaryResponse>(
+      `${this.baseUrl}/${employeeId}/salary`,
+      request
+    );
+  }
+
+  getSalaryHistory(
+    employeeId: number,
+    page = 0,
+    size = 20
+  ): Observable<PageResponse<SalaryHistoryResponse>> {
+
+    const params = new HttpParams()
+      .set('page', page)
+      .set('size', size);
+
+    return this.http.get<PageResponse<SalaryHistoryResponse>>(
+      `${this.baseUrl}/${employeeId}/salary-history`,
+      { params }
     );
   }
 }

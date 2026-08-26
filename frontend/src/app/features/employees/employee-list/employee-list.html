@@ -3,57 +3,95 @@
   <header class="page-header">
 
     <div>
-      <h1>Employees</h1>
-      <p>Manage employee salary information.</p>
+
+      <h1>
+        Employees
+      </h1>
+
+      <p>
+        Manage employee salary information.
+      </p>
+
     </div>
-
-    <button
-  type="button"
-  routerLink="/employees/new">
-  Add Employee
-</button>
-    
-  </header>
-  <div class="search-bar">
-
-  <input
-    type="text"
-    placeholder="Search employees..."
-    [ngModel]="search()"
-    (ngModelChange)="search.set($event)"
-    (keyup.enter)="onSearch()"
-  />
-
-  <button
-    type="button"
-    (click)="onSearch()">
-    Search
-  </button>
-
-  @if (search()) {
 
     <button
       type="button"
-      (click)="clearSearch()">
-      Clear
+      class="btn btn-primary"
+      routerLink="/employees/new">
+
+      Add Employee
+
     </button>
 
-  }
+  </header>
+
+
+  <!-- Search -->
+
+  <div class="search-bar">
+
+    <input
+      type="text"
+      placeholder="Search employees..."
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+      (keyup.enter)="onSearch()"
+    />
+
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="onSearch()">
+
+      Search
+
+    </button>
+
+
+    @if (search()) {
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="clearSearch()">
+
+        Clear
+
+      </button>
+
+    }
+
+  </div>
+
+
+  <!-- Loading -->
+
   @if (loading()) {
 
     <div class="state">
+
       Loading employees...
+
     </div>
 
   }
+
+
+  <!-- Error -->
 
   @if (error()) {
 
     <div class="state error">
+
       Unable to load employees.
+
     </div>
 
   }
+
+
+  <!-- Table -->
 
   @if (!loading() && !error()) {
 
@@ -62,47 +100,177 @@
       <table>
 
         <thead>
+
           <tr>
-            <th>Employee Code</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Country</th>
-            <th>Salary</th>
-            <th>Currency</th>
+
+
+            <!-- Employee Code -->
+
+            <th
+              class="sortable"
+              (click)="sortBy('employeeCode')">
+
+              <span>
+                Employee Code
+              </span>
+
+              <span class="sort-indicator">
+                {{ sortIndicator('employeeCode') }}
+              </span>
+
+            </th>
+
+
+            <!-- Name -->
+
+            <th
+              class="sortable"
+              (click)="sortBy('firstName')">
+
+              <span>
+                Name
+              </span>
+
+              <span class="sort-indicator">
+                {{ sortIndicator('firstName') }}
+              </span>
+
+            </th>
+
+
+            <!-- Email -->
+
+            <th
+              class="sortable"
+              (click)="sortBy('email')">
+
+              <span>
+                Email
+              </span>
+
+              <span class="sort-indicator">
+                {{ sortIndicator('email') }}
+              </span>
+
+            </th>
+
+
+            <!-- Country -->
+
+            <th
+              class="sortable"
+              (click)="sortBy('country')">
+
+              <span>
+                Country
+              </span>
+
+              <span class="sort-indicator">
+                {{ sortIndicator('country') }}
+              </span>
+
+            </th>
+
+
+            <!-- Salary -->
+
+            <th
+              class="sortable salary-column"
+              (click)="sortBy('currentSalary')">
+
+              <span>
+                Salary
+              </span>
+
+              <span class="sort-indicator">
+                {{ sortIndicator('currentSalary') }}
+              </span>
+
+            </th>
+
+
+            <!-- Currency -->
+
+            <th
+              class="sortable"
+              (click)="sortBy('currency')">
+
+              <span>
+                Currency
+              </span>
+
+              <span class="sort-indicator">
+                {{ sortIndicator('currency') }}
+              </span>
+
+            </th>
+
+
           </tr>
+
         </thead>
+
 
         <tbody>
 
-          @for (employee of employees(); track employee.id) {
+          @for (
+            employee of employees();
+            track employee.id
+          ) {
 
             <tr>
 
               <td>
-                <a [routerLink]="['/employees', employee.id]">
+
+                <a
+                  [routerLink]="[
+                    '/employees',
+                    employee.id
+                  ]">
+
                   {{ employee.employeeCode }}
+
                 </a>
+
               </td>
 
+
               <td>
+
                 {{ employee.firstName }}
                 {{ employee.lastName }}
+
               </td>
 
+
               <td>
+
                 {{ employee.email }}
+
               </td>
 
+
               <td>
+
                 {{ employee.country }}
+
               </td>
 
-              <td>
-                {{ employee.currentSalary | number:'1.0-2' }}
+
+              <td class="salary-column">
+
+                {{
+                  employee.currentSalary
+                    | number:'1.0-2'
+                }}
+
               </td>
 
+
               <td>
+
                 {{ employee.currency }}
+
               </td>
 
             </tr>
@@ -112,42 +280,88 @@
         </tbody>
 
       </table>
-      
+
     </div>
+
+
+    <!-- Pagination -->
+
     <div class="pagination">
 
-    <span>
+  <div class="pagination-info">
+
+    @if (totalElements() > 0) {
+
       Showing
       {{ page() * size() + 1 }}
       -
-      {{ Math.min((page() + 1) * size(), totalElements()) }}
+      {{
+        Math.min(
+          (page() + 1) * size(),
+          totalElements()
+        )
+      }}
       of
       {{ totalElements() }}
-    </span>
 
-    <div class="pagination-buttons">
+    } @else {
 
-      <button
-        type="button"
-        (click)="previousPage()"
-        [disabled]="page() === 0">
-        Previous
-      </button>
+      No employees found
+
+    }
+
+  </div>
+
+
+  <div class="pagination-controls">
+
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="previousPage()"
+      [disabled]="page() === 0">
+
+      Previous
+
+    </button>
+
+
+    <div class="page-jump">
 
       <span>
-        Page {{ page() + 1 }} of {{ totalPages() }}
+        Page
       </span>
 
-      <button
-        type="button"
-        (click)="nextPage()"
-        [disabled]="page() + 1 >= totalPages()">
-        Next
-      </button>
+      <input
+        type="number"
+        class="page-input"
+        [(ngModel)]="pageInput"
+        [min]="1"
+        [max]="totalPages()"
+        (keyup.enter)="goToPage()"
+      />
+
+      <span>
+        of {{ totalPages() }}
+      </span>
 
     </div>
 
-    </div>
+
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="nextPage()"
+      [disabled]="page() + 1 >= totalPages()">
+
+      Next
+
+    </button>
+
+  </div>
+
+</div>
+
   }
 
 </div>

@@ -26,7 +26,6 @@ export class EmployeeDetail implements OnInit {
   readonly employee = signal<Employee | null>(null);
   readonly loading = signal(true);
   readonly error = signal(false);
-
   ngOnInit(): void {
 
     const id = Number(

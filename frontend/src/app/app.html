@@ -1,1 +1,37 @@
-<router-outlet />
+<header class="app-header">
+
+  <h1>Salary Management</h1>
+
+  <nav class="app-nav">
+
+    @if (isDashboard()) {
+      <span class="nav-link active">
+        Dashboard
+      </span>
+    } @else {
+      <a
+        class="nav-link"
+        routerLink="/dashboard">
+        Dashboard
+      </a>
+    }
+
+    @if (isEmployees()) {
+      <span class="nav-link active">
+        Employees
+      </span>
+    } @else {
+      <a
+        class="nav-link"
+        routerLink="/employees">
+        Employees
+      </a>
+    }
+
+  </nav>
+
+</header>
+
+<main class="app-content">
+  <router-outlet />
+</main>
