@@ -20,14 +20,6 @@ public record UpdateEmployeeRequest(
 
         @NotBlank
         @Size(max = 100)
-        String country,
-
-        @NotNull
-        @DecimalMin(value = "0.0")
-        BigDecimal currentSalary,
-
-        @NotBlank
-        @Pattern(regexp = "^[A-Z]{3}$")
-        String currency
+        String country
 ) {
 }

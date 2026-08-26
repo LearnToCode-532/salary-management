@@ -174,9 +174,7 @@ class EmployeeServiceImplTest {
                                 "Rahul",
                                 "Sharma",
                                 "rahul.new@acme.com",
-                                "India",
-                                new BigDecimal("1600000"),
-                                "INR");
+                                "India");
 
                 when(employeeRepository.existsByEmail("rahul.new@acme.com"))
                                 .thenReturn(false);
@@ -187,7 +185,7 @@ class EmployeeServiceImplTest {
                                 .isEqualTo("rahul.new@acme.com");
 
                 assertThat(response.currentSalary())
-                                .isEqualByComparingTo("1600000");
+                                .isEqualByComparingTo("1500000");
 
                 verify(employeeRepository, never()).save(any());
         }
@@ -206,9 +204,7 @@ class EmployeeServiceImplTest {
                                 "Rahul",
                                 "Sharma",
                                 "existing@acme.com",
-                                "India",
-                                new BigDecimal("1600000"),
-                                "INR");
+                                "India");
 
                 assertThatThrownBy(
                                 () -> employeeService.update(1L, request))
@@ -230,14 +226,12 @@ class EmployeeServiceImplTest {
                                 "Rahul",
                                 "Sharma",
                                 "rahul@acme.com",
-                                "India",
-                                new BigDecimal("1600000"),
-                                "INR");
+                                "India");
 
                 EmployeeResponse response = employeeService.update(1L, request);
 
                 assertThat(response.currentSalary())
-                                .isEqualByComparingTo("1600000");
+                                .isEqualByComparingTo("1500000");
 
                 verify(employeeRepository, never())
                                 .existsByEmail("rahul@acme.com");

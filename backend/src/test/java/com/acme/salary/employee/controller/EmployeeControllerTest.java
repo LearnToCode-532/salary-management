@@ -136,9 +136,7 @@ class EmployeeControllerTest {
                         "Rahul",
                         "Sharma",
                         "rahul@acme.com",
-                        "India",
-                        new BigDecimal("1600000"),
-                        "INR"
+                        "India"
                 );
 
         when(employeeService.update(

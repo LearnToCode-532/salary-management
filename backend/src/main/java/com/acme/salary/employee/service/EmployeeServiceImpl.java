@@ -104,8 +104,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setLastName(request.lastName());
         employee.setEmail(request.email());
         employee.setCountry(request.country());
-        employee.setCurrentSalary(request.currentSalary());
-        employee.setCurrency(request.currency());
 
         return toResponse(employee);
     }
