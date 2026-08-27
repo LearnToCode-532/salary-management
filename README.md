@@ -29,6 +29,12 @@ The Salary Management System provides functionality for:
 The system is designed to remain simple and maintainable while providing a foundation that can be extended for larger-scale deployments.
 
 ---
+## Demo
+
+[![Watch the Project Demo](https://img.youtube.com/vi/O0rs8xt7VHE/maxresdefault.jpg)](https://www.youtube.com/watch?v=O0rs8xt7VHE)
+
+▶️ **[Watch the full project demo on YouTube](https://www.youtube.com/watch?v=O0rs8xt7VHE)**
+---
 
 ## 2. Architecture
 
