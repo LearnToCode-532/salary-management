@@ -82,7 +82,12 @@ jobs:
       contents: read
 
     steps:
-
+      - name: Show GitHub OIDC context
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Ref: $GITHUB_REF"
+          echo "Event: $GITHUB_EVENT_NAME"
+          echo "Workflow: $GITHUB_WORKFLOW"
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -91,6 +96,8 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/SalaryManagementGitHubActionsRole
           aws-region: ap-south-1
+          role-session-name: GitHubActions
+          role-skip-session-tagging: true
 
       - name: Login to Amazon ECR
         id: login-ecr
